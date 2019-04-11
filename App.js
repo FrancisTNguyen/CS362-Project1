@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { AppRegistry, Button, Image, Platform, Text, View, StyleSheet, TextInput } from 'react-native';
+import { AppRegistry, Button, FlatList, Image, Platform, Text, View, StyleSheet, TextInput } from 'react-native';
+import PinchZoomView from 'react-native-pinch-zoom-view';
+import { AsyncStorage } from "react-native";
 
 const instructions = Platform.select({
   ios: 'shake for device menu,',
@@ -31,14 +33,20 @@ export default class Bananas extends Component {
       calc: 0
     };
   }
+
   buttonPressed = () => {
     const { grade, desired, final } = this.state;
+
 
     this.setState({
       calc: (Number(desired)-(1-Number(final))*Number(grade))/Number(final)
     });
+
   }
 
+  nightMode = () => {
+    this.setState({backgroundColor : '#000000'});
+  }
 
 
   render() {
@@ -47,7 +55,7 @@ export default class Bananas extends Component {
     };
 
     return (
-      <View>
+      <PinchZoomView>
       <Image source={pic} style={{width: 493, height: 210}}/>
 
         <Text style ={styles.bigBlue}> Enter Current Grade % </Text>
@@ -74,9 +82,18 @@ export default class Bananas extends Component {
         <Button title={"Compute"} onPress={this.buttonPressed}/>
 
         <Text>{`You need a ${this.state.calc} on the final`}</Text>
+        <FlatList
+          data={[
+            {key: this.state.calc},
+          ]}
+          renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
+        />
+        
+        <Button title={"Night Mode"} onPress={this.ToggleDarkLight}/>
+        
 
 
-      </View>
+      </PinchZoomView>
 
     );
   }
